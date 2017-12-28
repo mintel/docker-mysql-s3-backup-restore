@@ -18,14 +18,15 @@ MYSQL_HOST=<mysql-host>
 MYSQL_USER=<mysql-username>
 MYSQL_PASSWORD=<mysql-passwd>
 MYSQL_DATABASE=<destination mysql-db>
-AWS_S3_RESTORE_SQL_FILE=<s3://path-to-your-sql-file>
+BACKUP_BUCKET=<s3://bucket-containing-backups>
+RESTORE_FILENAME=<name of file to restore in the backup-bucket>
 DROP_DB_IF_EXISTS=<false|true>
 
 ````
 ## Restore-flow
 
 * Validate settings
-* Download AWS_S3_RESTORE_SQL_FILE into /tmp
+* Download backup into /tmp
 * Drop MYSQL_DATABASE if DROP_DB_IF_EXISTS=true
 * Create MYSQL_DATABASE
 * Populate MYSQL_DATABASE
