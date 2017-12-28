@@ -22,8 +22,13 @@ if [ -z "${AWS_HOST_BASE}" ]; then
     exit 1
 fi
 
-if [ -z "${AWS_S3_RESTORE_SQL_FILE}" ]; then
-    printf "%s\n" "ERROR: The environment variable AWS_S3_RESTORE_SQL_FILE is not set.${end}"
+if [ -z "${BACKUP_BUCKET}" ]; then
+    printf "%s\n" "ERROR: The environment variable BACKUP_BUCKET is not set.${end}"
+    exit 1
+fi
+
+if [ -z "${RESTORE_FILENAME}" ]; then
+    printf "%s\n" "ERROR: The environment variable RESTORE_FILENAME is not set.${end}"
     exit 1
 fi
 
@@ -54,8 +59,8 @@ printf "Check MySQL at ${MYSQL_HOST} is alive..."
 mysql -h${MYSQL_HOST} -u${MYSQL_USER} -p${MYSQL_PASSWORD} mysql -e "show databases" >/dev/null || exit 1
 printf "%s\n" "${green}OK${end}"
 
-printf "Checking S3 restore-file '${AWS_S3_RESTORE_SQL_FILE}' exists..."
-s3cmd -c ${INSTALL_DIR}/.s3cfg ls ${AWS_S3_RESTORE_SQL_FILE} >/dev/null || exit 1
+printf "Checking S3 restore-file '${S3_RESTORE_PATH}' exists..."
+s3cmd -c ${INSTALL_DIR}/.s3cfg ls ${S3_RESTORE_PATH} >/dev/null || exit 1
 printf "%s\n" "${green}OK${end}"
 
 ${INSTALL_DIR}/restore || exit 1

@@ -4,11 +4,11 @@ source settings
 
 cd ${WORK_DIR}
 
-printf "Fetching file ${AWS_S3_RESTORE_SQL_FILE}..."
-s3cmd -c ${INSTALL_DIR}/.s3cfg get ${AWS_S3_RESTORE_SQL_FILE} > /dev/null
+printf "Fetching file ${S3_RESTORE_PATH}..."
+s3cmd -c ${INSTALL_DIR}/.s3cfg get ${S3_RESTORE_PATH} > /dev/null
 printf "%s\n" "${green}OK${end}"
 
-file="${AWS_S3_RESTORE_SQL_FILE##*/}"
+file="${S3_RESTORE_PATH##*/}"
 
 if [[ $file =~ \.gz$ ]]; then
     printf "Looks to be gzipped - uncompressing..."
