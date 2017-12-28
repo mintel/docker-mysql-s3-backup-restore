@@ -1,11 +1,11 @@
 #!/bin/bash
 
-source utils
+source settings
 
-cd /tmp
+cd ${WORK_DIR}
 
 printf "Fetching file ${AWS_S3_RESTORE_SQL_FILE}..."
-s3cmd -c $work_dir/.s3cfg get ${AWS_S3_RESTORE_SQL_FILE} > /dev/null
+s3cmd -c ${INSTALL_DIR}/.s3cfg get ${AWS_S3_RESTORE_SQL_FILE} > /dev/null
 printf "%s\n" "${green}OK${end}"
 
 file="${AWS_S3_RESTORE_SQL_FILE##*/}"
@@ -19,16 +19,16 @@ fi
 
 if [ "$DROP_DB_IF_EXISTS" = true ]; then
 printf "Dropping database ${MYSQL_DATABASE}..."
-mysql -h${MYSQL_HOST} -u${MYSQL_USER} -p${MYSQL_PASSWORD} -e "DROP DATABASE IF EXISTS ${MYSQL_DATABASE}" >/dev/null || exit 1
+mysql ${MYSQL_OPTS} -e "DROP DATABASE IF EXISTS ${MYSQL_DATABASE}" >/dev/null || exit 1
 printf "%s\n" "${green}OK${end}"
 fi
 
 printf "Creating database ${MYSQL_DATABASE}..."
-mysql -h${MYSQL_HOST} -u${MYSQL_USER} -p${MYSQL_PASSWORD} -e "CREATE DATABASE ${MYSQL_DATABASE}" >/dev/null || exit 1
+mysql ${MYSQL_OPTS} -e "CREATE DATABASE ${MYSQL_DATABASE}" >/dev/null || exit 1
 printf "%s\n" "${green}OK${end}"
 
 printf "Restoring database ${MYSQL_DATABASE}..."
-mysql -h${MYSQL_HOST} -u${MYSQL_USER} -p${MYSQL_PASSWORD} ${MYSQL_DATABASE} >/dev/null < ${file} || exit 1
+mysql ${MYSQL_OPTS} ${MYSQL_DATABASE} >/dev/null < ${file} || exit 1
 printf "%s\n" "${green}OK${end}"
 
 

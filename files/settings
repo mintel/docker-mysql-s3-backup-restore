@@ -1,0 +1,12 @@
+INSTALL_DIR=/opt/docker-mysql-s3
+WORK_DIR=/tmp
+
+# Mysql options
+MYSQL_HOST=${MYSQL_HOST:=localhost}
+MYSQL_PORT=${MYSQL_PORT:=3306}
+MYSQL_OPTS="-u ${MYSQL_USER} -p${MYSQL_PASSWORD} -h${MYSQL_HOST} -P ${MYSQL_PORT}"
+# Color settings for print/echo statements
+red=$'\e[1;31m'
+green=$'\e[1;32m'
+blue=$'\e[1;34m'
+end=$'\e[0m'
