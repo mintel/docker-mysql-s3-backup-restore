@@ -1,0 +1,66 @@
+#!/bin/bash
+
+source utils
+
+if [ -z "${AWS_ACCESS_KEY}" ]; then
+    printf "%s\n" "${red}ERROR: The environment variable AWS_ACCESS_KEY is not set.${end}"
+    exit 1
+fi
+
+if [ -z "${AWS_SECRET_KEY}" ]; then
+    printf "%s\n" "${red}ERROR: The environment variable AWS_SECRET_KEY is not set.${end}"
+    exit 1
+fi
+
+if [ -z "${AWS_HOST_BUCKET}" ]; then
+    printf "%s\n" "${red}ERROR: The environment variable AWS_HOST_BUCKET is not set.${end}"
+    exit 1
+fi
+
+if [ -z "${AWS_HOST_BASE}" ]; then
+    printf "%s\n" "ERROR: The environment variable AWS_HOST_BASE is not set.${end}"
+    exit 1
+fi
+
+if [ -z "${AWS_S3_RESTORE_SQL_FILE}" ]; then
+    printf "%s\n" "ERROR: The environment variable AWS_S3_RESTORE_SQL_FILE is not set.${end}"
+    exit 1
+fi
+
+if [ -z "${MYSQL_USER}" ]; then
+    printf "%s\n" "ERROR: The environment variable MYSQL_USER is not set.${end}"
+    exit 1
+fi
+
+if [ -z "${MYSQL_PASSWORD}" ]; then
+    printf "%s\n" "ERROR: The environment variable MYSQL_PASSWORD is not set.${end}"
+    exit 1
+fi
+
+if [ -z "${MYSQL_HOST}" ]; then
+    printf "%s\n" "ERROR: The environment variable MYSQL_HOST is not set.${end}"
+    exit 1
+fi
+
+if [ -z "${MYSQL_DATABASE}" ]; then
+    printf "%s\n" "ERROR: The environment variable MYSQL_DATABASE is not set.${end}"
+    exit 1
+fi
+
+echo "" >> $work_dir/.s3cfg
+echo "access_key=${AWS_ACCESS_KEY}" >> $work_dir/.s3cfg
+echo "secret_key=${AWS_SECRET_KEY}" >> $work_dir/.s3cfg
+echo "host_bucket=${AWS_HOST_BUCKET}" >> $work_dir/.s3cfg
+echo "host_base=${AWS_HOST_BASE}" >> $work_dir/.s3cfg
+
+printf "Written s3config to $work_dir/.s3cfg\n"
+
+printf "Check MySQL at ${MYSQL_HOST} is alive..."
+mysql -h${MYSQL_HOST} -u${MYSQL_USER} -p${MYSQL_PASSWORD} mysql -e "show databases" >/dev/null || exit 1
+printf "%s\n" "${green}OK${end}"
+
+printf "Checking S3 restore-file '${AWS_S3_RESTORE_SQL_FILE}' exists..."
+s3cmd -c $work_dir/.s3cfg ls ${AWS_S3_RESTORE_SQL_FILE} >/dev/null || exit 1
+printf "%s\n" "${green}OK${end}"
+
+$work_dir/restore || exit 1
