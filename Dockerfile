@@ -9,7 +9,7 @@ RUN rm -rf /var/cache/apk/*
 ADD files/s3cfg /opt/docker-mysql-s3/.s3cfg
 ADD files/bootstrap /opt/docker-mysql-s3/bootstrap
 ADD files/restore /opt/docker-mysql-s3/restore
-ADD files/backup ropt/docker-mysql-s3/backup
+ADD files/backup /opt/docker-mysql-s3/backup
 ADD files/settings /opt/docker-mysql-s3/settings
 
 RUN chmod +x /opt/docker-mysql-s3/bootstrap && \
