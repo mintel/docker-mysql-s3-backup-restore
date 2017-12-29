@@ -4,18 +4,18 @@ source settings
 
 cd ${WORK_DIR}
 
-output_file="${MYSQL_DATABASE}-$(date "+%Y%m%d%H%M%S")"
-printf "Creating backup of ${MYSQL_DATABASE}..."
+output_file="${MYSQL_DATABASE}-$(date "+%Y%m%d%H%M%S").sql"
+printf "Creating backup of database '${MYSQL_DATABASE}'..."
 mysqldump --opt ${MYSQL_OPTS} ${MYSQL_DATABASE} > $output_file
 printf "%s\n" "${green}OK${end}"
 
-
 printf "Compressing..."
-gzip $output_file
+gzip $output_file || exit 1
+output_file="${output_file}.gz"
 printf "%s\n" "${green}OK${end}"
 
 printf "Storing file ${output_file}..."
-s3cmd -c ${INSTALL_DIR}/.s3cfg put ${output_file} ${BACKUP_BUCKET} > /dev/null
+s3cmd ${S3_CMD_OPTS} put ${output_file} ${S3_BACKUP_BUCKET} > /dev/null
 printf "%s\n" "${green}OK${end}"
 
 printf "Deleting dumpfile ${output_file}..."

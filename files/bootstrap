@@ -2,56 +2,61 @@
 
 source settings
 
-if [ -z "${AWS_ACCESS_KEY}" ]; then
-    printf "%s\n" "${red}ERROR: The environment variable AWS_ACCESS_KEY is not set.${end}"
+if [ -z "${MODE}" ]; then
+    printf "%s\n" "${red}ERROR: The environment variable MODE is not set.${end}"
     exit 1
 fi
 
-if [ -z "${AWS_SECRET_KEY}" ]; then
-    printf "%s\n" "${red}ERROR: The environment variable AWS_SECRET_KEY is not set.${end}"
+if [ -z "${S3_ACCESS_KEY}" ]; then
+    printf "%s\n" "${red}ERROR: The environment variable S3_ACCESS_KEY is not set.${end}"
     exit 1
 fi
 
-if [ -z "${AWS_HOST_BUCKET}" ]; then
-    printf "%s\n" "${red}ERROR: The environment variable AWS_HOST_BUCKET is not set.${end}"
+if [ -z "${S3_SECRET_KEY}" ]; then
+    printf "%s\n" "${red}ERROR: The environment variable S3_SECRET_KEY is not set.${end}"
     exit 1
 fi
 
-if [ -z "${AWS_HOST_BASE}" ]; then
-    printf "%s\n" "ERROR: The environment variable AWS_HOST_BASE is not set.${end}"
+if [ -z "${S3_HOST_BUCKET}" ]; then
+    printf "%s\n" "${red}ERROR: The environment variable S3_HOST_BUCKET is not set.${end}"
     exit 1
 fi
 
-if [ -z "${BACKUP_BUCKET}" ]; then
-    printf "%s\n" "ERROR: The environment variable BACKUP_BUCKET is not set.${end}"
+if [ -z "${S3_HOST_BASE}" ]; then
+    printf "%s\n" "${red}ERROR: The environment variable S3_HOST_BASE is not set.${end}"
     exit 1
 fi
 
-if [ -z "${RESTORE_FILENAME}" ]; then
-    printf "%s\n" "ERROR: The environment variable RESTORE_FILENAME is not set.${end}"
+if [ -z "${S3_BACKUP_BUCKET}" ]; then
+    printf "%s\n" "${red}ERROR: The environment variable S3_BACKUP_BUCKET is not set.${end}"
+    exit 1
+fi
+
+if [ -z "${S3_RESTORE_FILENAME}" ]; then
+    printf "%s\n" "${red}ERROR: The environment variable S3_RESTORE_FILENAME is not set.${end}"
     exit 1
 fi
 
 if [ -z "${MYSQL_USER}" ]; then
-    printf "%s\n" "ERROR: The environment variable MYSQL_USER is not set.${end}"
+    printf "%s\n" "${red}ERROR: The environment variable MYSQL_USER is not set.${end}"
     exit 1
 fi
 
 if [ -z "${MYSQL_PASSWORD}" ]; then
-    printf "%s\n" "ERROR: The environment variable MYSQL_PASSWORD is not set.${end}"
+    printf "%s\n" "${red}ERROR: The environment variable MYSQL_PASSWORD is not set.${end}"
     exit 1
 fi
 
 if [ -z "${MYSQL_DATABASE}" ]; then
-    printf "%s\n" "ERROR: The environment variable MYSQL_DATABASE is not set.${end}"
+    printf "%s\n" "${red}ERROR: The environment variable MYSQL_DATABASE is not set.${end}"
     exit 1
 fi
 
 echo "" >> ${INSTALL_DIR}/.s3cfg
-echo "access_key=${AWS_ACCESS_KEY}" >> ${INSTALL_DIR}/.s3cfg
-echo "secret_key=${AWS_SECRET_KEY}" >> ${INSTALL_DIR}/.s3cfg
-echo "host_bucket=${AWS_HOST_BUCKET}" >> ${INSTALL_DIR}/.s3cfg
-echo "host_base=${AWS_HOST_BASE}" >> ${INSTALL_DIR}/.s3cfg
+echo "access_key=${S3_ACCESS_KEY}" >> ${INSTALL_DIR}/.s3cfg
+echo "secret_key=${S3_SECRET_KEY}" >> ${INSTALL_DIR}/.s3cfg
+echo "host_bucket=${S3_HOST_BUCKET}" >> ${INSTALL_DIR}/.s3cfg
+echo "host_base=${S3_HOST_BASE}" >> ${INSTALL_DIR}/.s3cfg
 
 printf "Written s3config to ${INSTALL_DIR}/.s3cfg\n"
 
@@ -60,7 +65,14 @@ mysql -h${MYSQL_HOST} -u${MYSQL_USER} -p${MYSQL_PASSWORD} mysql -e "show databas
 printf "%s\n" "${green}OK${end}"
 
 printf "Checking S3 restore-file '${S3_RESTORE_PATH}' exists..."
-s3cmd -c ${INSTALL_DIR}/.s3cfg ls ${S3_RESTORE_PATH} >/dev/null || exit 1
+s3cmd ${S3_CMD_OPTS} ls ${S3_RESTORE_PATH} >/dev/null || exit 1
 printf "%s\n" "${green}OK${end}"
 
-${INSTALL_DIR}/restore || exit 1
+if [ ${MODE} == "restore" ]; then
+    ${INSTALL_DIR}/restore || exit 1
+elif [ ${MODE} == "backup" ]; then
+    ${INSTALL_DIR}/backup || exit 1
+else
+    printf "%s\n" "${red}ERROR: Unknown MODE '${MODE}'. Supported values are 'backup', 'restore'.${end}"
+    exit 1
+fi

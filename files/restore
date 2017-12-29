@@ -5,7 +5,7 @@ source settings
 cd ${WORK_DIR}
 
 printf "Fetching file ${S3_RESTORE_PATH}..."
-s3cmd -c ${INSTALL_DIR}/.s3cfg get ${S3_RESTORE_PATH} > /dev/null
+s3cmd ${S3_CMD_OPTS} get ${S3_RESTORE_PATH} > /dev/null
 printf "%s\n" "${green}OK${end}"
 
 file="${S3_RESTORE_PATH##*/}"
@@ -17,7 +17,7 @@ if [[ $file =~ \.gz$ ]]; then
     printf "%s\n" "${green}OK${end}"
 fi
 
-if [ "$DROP_DB_IF_EXISTS" = true ]; then
+if [ "$MYSQL_DROP_DB_IF_EXISTS" = true ]; then
 printf "Dropping database ${MYSQL_DATABASE}..."
 mysql ${MYSQL_OPTS} -e "DROP DATABASE IF EXISTS ${MYSQL_DATABASE}" >/dev/null || exit 1
 printf "%s\n" "${green}OK${end}"

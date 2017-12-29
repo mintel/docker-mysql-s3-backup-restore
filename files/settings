@@ -6,8 +6,9 @@ MYSQL_HOST=${MYSQL_HOST:=localhost}
 MYSQL_PORT=${MYSQL_PORT:=3306}
 MYSQL_OPTS="-u ${MYSQL_USER} -p${MYSQL_PASSWORD} -h${MYSQL_HOST} -P ${MYSQL_PORT}"
 
-# S3 vars
-S3_RESTORE_PATH="${BACKUP_BUCKET}/${RESTORE_FILENAME}"
+# S3 options
+S3_CMD_OPTS="-c ${INSTALL_DIR}/.s3cfg"
+S3_RESTORE_PATH="${S3_BACKUP_BUCKET}/${S3_RESTORE_FILENAME}"
 
 # Color settings for print/echo statements
 red=$'\e[1;31m'
