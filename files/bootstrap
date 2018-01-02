@@ -1,4 +1,4 @@
-#!/bin/bash
+ #!/bin/bash
 
 source settings
 
@@ -66,7 +66,7 @@ printf "%s\n" "${green}OK${end}"
 
 if [ "${MYSQL_EXIT_SUCCESS_IF_DB_EXISTS}" = true ]; then
     mysql ${MYSQL_OPTS} -e "USE ${MYSQL_DATABASE}" > /dev/null 2&>1
-    if [ $? == 0 ]; then
+    if [ ${PIPESTATUS[0]} == 0 ]; then
         # Database already exists and we've access to exit
         printf "Database ${MYSQL_DATABASE} exists and MYSQL_EXIT_SUCCESS_IF_DB_EXISTS is true\n"
         exit 0
@@ -74,8 +74,8 @@ if [ "${MYSQL_EXIT_SUCCESS_IF_DB_EXISTS}" = true ]; then
 fi
 
 if [ "${MYSQL_DROP_DB_IF_EXISTS}" = false ]; then
-    mysql ${MYSQL_OPTS} -e "USE ${MYSQL_DATABASE}"
-    if [ $? == 0 ]; then
+    mysql ${MYSQL_OPTS} -e "USE ${MYSQL_DATABASE}" > /dev/null 2&>1
+    if [ ${PIPESTATUS[0]} == 0 ]; then
         # Database already exists and we haven't asked to drop it...so exit
         printf "%s\n" "${red}ERROR: Database ${MYSQL_DATABASE} already exists and MYSQL_DROP_DB_IF_EXISTS is false.${end}"
         exit 1
