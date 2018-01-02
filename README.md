@@ -2,7 +2,7 @@
 
 Work in progress
 
-* Based on Alpine 3.3
+* Based on Alpine
 * Tested on Ceph only
 
 ````
