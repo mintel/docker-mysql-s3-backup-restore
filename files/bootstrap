@@ -64,6 +64,16 @@ printf "Check MySQL at ${MYSQL_HOST} is alive..."
 mysql -h${MYSQL_HOST} -u${MYSQL_USER} -p${MYSQL_PASSWORD} -e "SHOW DATABASES" >/dev/null || exit 1
 printf "%s\n" "${green}OK${end}"
 
+
+if [ "${MYSQL_DROP_DB_IF_EXISTS}" = false ]; then
+    mysql ${MYSQL_OPTS} -e "USE ${MYSQL_DATABASE}"
+    if [ $? == 0 ]; then
+        # Database already exists and we haven't asked to drop it...so exit
+        printf "%s\n" "${red}ERROR: Database ${MYSQL_DATABASE} already exists and ${MYSQL_DROP_DB_IF_EXISTS} is false.${end}"
+        exit 1
+    fi
+fi
+
 printf "Checking S3 restore-file '${S3_RESTORE_PATH}' exists..."
 s3cmd ${S3_CMD_OPTS} ls ${S3_RESTORE_PATH} >/dev/null || exit 1
 printf "%s\n" "${green}OK${end}"
