@@ -61,7 +61,7 @@ echo "host_base=${S3_HOST_BASE}" >> ${INSTALL_DIR}/.s3cfg
 printf "Written s3config to ${INSTALL_DIR}/.s3cfg\n"
 
 printf "Check MySQL at ${MYSQL_HOST} is alive..."
-mysql -h${MYSQL_HOST} -u${MYSQL_USER} -p${MYSQL_PASSWORD} -e "USE ${MYSQL_DATABASE}" >/dev/null || exit 1
+mysql -h${MYSQL_HOST} -u${MYSQL_USER} -p${MYSQL_PASSWORD} -e "SHOW DATABASES" >/dev/null || exit 1
 printf "%s\n" "${green}OK${end}"
 
 printf "Checking S3 restore-file '${S3_RESTORE_PATH}' exists..."
