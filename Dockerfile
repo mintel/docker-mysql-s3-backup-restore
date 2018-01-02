@@ -17,4 +17,4 @@ RUN chmod +x /opt/docker-mysql-s3/bootstrap && \
     chmod +x /opt/docker-mysql-s3/backup
 
 WORKDIR /opt/docker-mysql-s3
-CMD ["/opt/docker-mysql-s3/bootstrap"]
+ENTRYPOINT ["/opt/docker-mysql-s3/bootstrap"]
