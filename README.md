@@ -23,6 +23,7 @@ MYSQL_USER=<mysql-username>
 MYSQL_PASSWORD=<mysql-passwd>
 MYSQL_DATABASE=<destination mysql-db>
 MYSQL_DROP_DB_IF_EXISTS=<false|true>
+MYSQL_EXIT_SUCCESS_IF_DB_EXISTS<false|true>
 ````
 ## Restore-flow
 
@@ -44,6 +45,7 @@ MYSQL_DROP_DB_IF_EXISTS=<false|true>
 ## TODO
 
 * More error checking
+* printf doesn't flush without newline
 * Allow restoring from a directory (deal with multiple *.sql)
 * Can probably remove the template .s3cfg and pass via cmdline
 * Seeding Galera nodes
