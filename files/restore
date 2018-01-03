@@ -2,6 +2,11 @@
 
 source settings
 
+if [ -z "${S3_RESTORE_FILENAME}" ]; then
+    printf "%s\n" "${red}ERROR: The environment variable S3_RESTORE_FILENAME is not set.${end}"
+    exit 1
+fi
+
 if [ "${MYSQL_EXIT_SUCCESS_IF_DB_EXISTS}" = true ]; then
     mysql ${MYSQL_OPTS} -e "USE ${MYSQL_DATABASE}"
     if [ $? == 0 ]; then

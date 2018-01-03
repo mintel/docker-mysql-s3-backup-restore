@@ -1,4 +1,4 @@
- #!/bin/bash
+#!/bin/bash
 
 source settings
 
@@ -32,11 +32,6 @@ if [ -z "${S3_BACKUP_BUCKET}" ]; then
     exit 1
 fi
 
-if [ -z "${S3_RESTORE_FILENAME}" ]; then
-    printf "%s\n" "${red}ERROR: The environment variable S3_RESTORE_FILENAME is not set.${end}"
-    exit 1
-fi
-
 if [ -z "${MYSQL_USER}" ]; then
     printf "%s\n" "${red}ERROR: The environment variable MYSQL_USER is not set.${end}"
     exit 1
@@ -63,8 +58,6 @@ printf "Written s3config to ${INSTALL_DIR}/.s3cfg\n"
 printf "Check MySQL at ${MYSQL_HOST} is alive..."
 mysql -h${MYSQL_HOST} -u${MYSQL_USER} -p${MYSQL_PASSWORD} -e "SHOW DATABASES" >/dev/null || exit 1
 printf "%s\n" "${green}OK${end}"
-
-
 
 if [ ${MODE} == "restore" ]; then
     ${INSTALL_DIR}/restore || exit 1
