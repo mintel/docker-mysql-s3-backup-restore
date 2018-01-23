@@ -23,7 +23,8 @@ MYSQL_USER=<mysql-username>
 MYSQL_PASSWORD=<mysql-passwd>
 MYSQL_DATABASE=<destination mysql-db>
 MYSQL_DROP_DB_IF_EXISTS=<false|true>
-MYSQL_EXIT_SUCCESS_IF_DB_EXISTS<false|true>
+MYSQL_EXIT_SUCCESS_IF_DB_EXISTS=<false|true>
+MYSQL_ALLOW_DB_OVERWRITE=<false|true>
 ````
 ## Restore-flow
 
