@@ -16,12 +16,15 @@ if [ "${MYSQL_EXIT_SUCCESS_IF_DB_EXISTS}" = true ]; then
     fi
 fi
 
-if [ "${MYSQL_DROP_DB_IF_EXISTS}" = false ]; then
-    mysql ${MYSQL_OPTS} -e "USE ${MYSQL_DATABASE}"
-    if [ $? == 0 ]; then
-        # Database already exists and we haven't asked to drop it...so exit
-        printf "%s\n" "${red}ERROR: Database ${MYSQL_DATABASE} already exists and MYSQL_DROP_DB_IF_EXISTS is false.${end}"
-        exit 1
+if [ "${MYSQL_ALLOW_DB_OVERWRITE}" = false ]; then
+
+    if [ "${MYSQL_DROP_DB_IF_EXISTS}" = false ]; then
+        mysql ${MYSQL_OPTS} -e "USE ${MYSQL_DATABASE}"
+        if [ $? == 0 ]; then
+            # Database already exists and we haven't asked to drop it...so exit
+            printf "%s\n" "${red}ERROR: Database ${MYSQL_DATABASE} already exists and MYSQL_DROP_DB_IF_EXISTS is false.${end}"
+            exit 1
+        fi
     fi
 fi
 
@@ -51,7 +54,7 @@ printf "%s\n" "${green}OK${end}"
 fi
 
 printf "Creating database ${MYSQL_DATABASE}..."
-mysql ${MYSQL_OPTS} -e "CREATE DATABASE ${MYSQL_DATABASE}" >/dev/null || exit 1
+mysql ${MYSQL_OPTS} -e "CREATE DATABASE IF NOT EXISTS ${MYSQL_DATABASE}" >/dev/null || exit 1
 printf "%s\n" "${green}OK${end}"
 
 printf "Restoring database ${MYSQL_DATABASE}..."
